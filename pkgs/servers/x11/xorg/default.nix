@@ -3104,9 +3104,9 @@ lib.makeScope newScope (self: with self; {
     pname = "xorg-server";
     version = "1.20.13";
     builder = ./builder.sh;
-    src = fetchurl {
-      url = "mirror://xorg/individual/xserver/xorg-server-1.20.13.tar.xz";
-      sha256 = "003371ad64bz7i2hx7idnh90yw12dbh116ssy40s70balnb4xaj0";
+    src = fetchGit {
+      url = "https://gitlab.freedesktop.org/xorg/xserver.git";
+      rev = "7cdcdfea08ad9d63466286a6f94783cbf5fc3717";
     };
     hardeningDisable = [ "bindnow" "relro" ];
     nativeBuildInputs = [ pkg-config ];
