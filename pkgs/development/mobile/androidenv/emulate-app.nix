@@ -70,7 +70,7 @@ stdenv.mkDerivation {
     # Create a virtual android device for testing if it does not exist
     ${sdk}/libexec/android-sdk/tools/bin/avdmanager list target
 
-    if [ "$(${sdk}/libexec/android-sdk/tools/android list avd | grep 'Name: device')" = "" ]
+    if [ "$(${sdk}/libexec/android-sdk/tools/bin/avdmanager list avd | grep 'Name: device')" = "" ]
     then
         # Create a virtual android device
         yes "" | ${sdk}/libexec/android-sdk/tools/bin/avdmanager create avd -n device -k "system-images;android-${platformVersion};${systemImageType};${abiVersion}" $NIX_ANDROID_AVD_FLAGS

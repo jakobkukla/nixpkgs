@@ -1,8 +1,13 @@
-{stdenv, unzip}:
+{stdenv, writeText, unzip, callPackage}:
 {package, os ? null, buildInputs ? [], patchInstructions ? "", meta ? {}, ...}@args:
 
 let
   extraParams = removeAttrs args [ "package" "os" "buildInputs" "patchInstructions" ];
+
+  packageXml = callPackage ./package-xml.nix {
+    inherit package;
+    licenseText = "hello";
+  };
 in
 stdenv.mkDerivation ({
   pname = package.name;
@@ -30,6 +35,7 @@ stdenv.mkDerivation ({
     mkdir -p $packageBaseDir
     cd $packageBaseDir
     cp -a $sourceRoot/* .
+    ln -sfv ${writeText "package.xml" packageXml} package.xml
     ${patchInstructions}
   '';
 

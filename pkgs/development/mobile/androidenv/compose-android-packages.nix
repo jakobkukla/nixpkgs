@@ -3,6 +3,7 @@
 }:
 
 { toolsVersion ? "26.1.1"
+, cmdlineToolsVersions ? [ "7.0" ]
 , platformToolsVersion ? "33.0.2"
 , buildToolsVersions ? [ "32.0.0" ]
 , includeEmulator ? false
@@ -113,7 +114,15 @@ let
 in
 rec {
   deployAndroidPackage = callPackage ./deploy-androidpackage.nix {
+    inherit callPackage;
   };
+
+  cmdline-tools = map (version:
+    callPackage ./cmdline-tools.nix {
+      inherit deployAndroidPackage os;
+      package = packages.cmdline-tools.${version};
+    }
+  ) cmdlineToolsVersions;
 
   platform-tools = callPackage ./platform-tools.nix {
     inherit deployAndroidPackage;
@@ -254,6 +263,7 @@ rec {
 
     postInstall = ''
       # Symlink all requested plugins
+      ${linkPlugins { name = "cmdline-tools"; plugins = cmdline-tools; }}
       ${linkPlugin { name = "platform-tools"; plugin = platform-tools; }}
       ${linkPlugins { name = "build-tools"; plugins = build-tools; }}
       ${linkPlugin { name = "emulator"; plugin = emulator; check = includeEmulator; }}
