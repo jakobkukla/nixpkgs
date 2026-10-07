@@ -14,9 +14,9 @@
   setxkbmap,
   xkbcomp,
   libx11,
+  xvfb,
   # To enable the "interactive-wayland" subcommand of xkbcli. This is the
   # wayland equivalent of `xev` on X11.
-  xvfb,
   withWaylandTools ? stdenv.hostPlatform.isLinux,
   wayland,
   wayland-protocols,
@@ -49,7 +49,6 @@ stdenv.mkDerivation (finalAttrs: {
     bison
     doxygen
   ]
-  ++ lib.optional stdenv.hostPlatform.isLinux xvfb
   ++ lib.optional withWaylandTools wayland-scanner;
 
   buildInputs = [
@@ -65,7 +64,8 @@ stdenv.mkDerivation (finalAttrs: {
     python3
     setxkbmap
     xkbcomp
-  ];
+  ]
+  ++ lib.optional stdenv.buildPlatform.isLinux xvfb;
 
   mesonFlags = [
     "-Dxkb-config-root=${xkeyboard_config}/etc/X11/xkb"
